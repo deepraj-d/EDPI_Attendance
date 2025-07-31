@@ -1,19 +1,8 @@
-
-import face_recognition
 from datetime import datetime
 import numpy as np
 import cv2
 import os 
 
-# def get_embeddings_foo(s): 
-#     name = s.split("/")[-1].split(".")[0]
-#     image = cv2.imread(s)
-#     rgb_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-#     face_locations = face_recognition.face_locations(rgb_image)
-#     face_encodings = face_recognition.face_encodings(rgb_image)
-    
-#     known_faces[name] = face_encodings[0]
-#     return None
 
 def get_employee_name(student_face,known_faces):
     """
@@ -22,9 +11,6 @@ def get_employee_name(student_face,known_faces):
     
     `offset_x` and `offset_y` are used to convert crop-relative bbox to original frame coords.
     """
-   
-    # Crop face from original frame with padding
-    
     resized_face = cv2.resize(student_face, (150, 150))
 
     embedding = get_embedding(resized_face)
@@ -34,7 +20,7 @@ def get_employee_name(student_face,known_faces):
     if embedding is not None:
         for name, known_embedding in known_faces.items():
             similarity = cosine_similarity(embedding, known_embedding)
-            # print(f"Comparing with {name}: {similarity:.4f}")
+            
             if similarity > 0.94:
                 similarity_sc = similarity
                 recognized_name = name
@@ -46,8 +32,8 @@ def get_employee_name(student_face,known_faces):
     # No face detected or no match
     return None, None
 
-import numpy as np
-# from sklearn.metrics.pairwise import cosine_similarity
+
+
 
 
 
@@ -93,14 +79,12 @@ def get_employee_name_arcface(student_face, known_faces, model_app, threshold=0.
 
 
 
-# # ---- Helper: compute cosine similarity ----
-# def cosine_similarity(a, b):
-#     return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
-
+# ---- Helper: compute cosine similarity ----
 def cosine_similarity(a, b):
     a = np.asarray(a).flatten()
     b = np.asarray(b).flatten()
     return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
+
 
 # ---- Helper : add padding ------
 def pad_crop(frame, x1, y1, x2, y2, padding=20):
@@ -115,29 +99,9 @@ def pad_crop(frame, x1, y1, x2, y2, padding=20):
     return frame[y1_p:y2_p, x1_p:x2_p]
 
 
-# ---- Helper: get 128D embedding ----
-def get_embedding(img):
-    rgb_img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    face_locations = face_recognition.face_locations(rgb_img)#,number_of_times_to_upsample=2)
-    encodings = face_recognition.face_encodings(rgb_img)#,face_locations,num_jitters=10,model='large')
-    if len(encodings) > 0:
-        return encodings[0]
-    else:
-        return None
     
+# ---- Helper: get system time ----
 def get_time():
     now = datetime.now()
     time_str = now.strftime("%H:%M:%S")
     return time_str
-
-
-# ---- Helper: temp time obj ----
-import easyocr
-reader = easyocr.Reader(['en'])
-time_stamp_region = [1260,1,1420,40]
-def get_timestamp(fr):
-    region = fr[time_stamp_region[1]:time_stamp_region[3],
-                   time_stamp_region[0]:time_stamp_region[2]]
-    out = reader.readtext(image=region)
-    time = out[0][1].replace(".",":")
-    return time

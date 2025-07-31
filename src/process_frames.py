@@ -1,11 +1,10 @@
+from utils import get_employee_name_arcface 
+from src.embeddings import db_path,load_db
+from src.embeddings import pad_crop
 from ultralytics import YOLO
 import os
 import cv2
 import csv
-import torch
-from utils import get_employee_name,get_time,get_employee_name_arcface,get_timestamp
-from src.embeddings import db_path,load_db
-from src.embeddings import pad_crop
 
 yolo_model_face = YOLO('pre_trained_models/yolov11n-face.pt')
 yolo_model_body = YOLO('pre_trained_models/yolov8n.pt')
@@ -22,7 +21,7 @@ csv_file_path = "sample.csv"
 if not os.path.exists(csv_file_path):
     with open(csv_file_path, mode='w', newline='') as file:
         writer = csv.writer(file)
-        writer.writerow(['frame_count', 'name','timestamp'])  # header
+        writer.writerow(['frame_count', 'name'])  # header # timestamp remain
 
 
 # ---- Embeddings ----
@@ -30,6 +29,11 @@ known_faces = load_db(db_path)
 
 
 def get_data(frame,frame_count):
+    """
+    get data fuction is responsible for getting face detection
+    two step detction step one will detect person and step two will  detect face
+    
+    """
     new_entries = []
     results = yolo_model_body(frame)
     for result in results:
@@ -78,7 +82,7 @@ def get_data(frame,frame_count):
                         # if name is not None and score is not None:
                         if name is not None and score is not None:
                             name = name.split("_")[0] if "_" in name else name
-                            new_entries.append([frame_count, name, get_timestamp(fr=frame)])
+                            new_entries.append([frame_count, name ])#, get_timestamp(fr=frame)])
                             
                         cv2.putText(frame, name, (x2_f, y2_f + 20),cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 0, 255), 2)
                             # save_img_to_cluster(name,person_crop,name,frame_count)
