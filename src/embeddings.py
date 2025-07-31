@@ -53,9 +53,4 @@ def load_db(path):
 # for i,(name,embed) in enumerate(db.items()):
 #     print(i,name)
 
-# def identify_employee(image,embeddings_dir = db,threshold = 0.8):
-    
-#     new_embeddings = get_embedding(image)
-#     for i,(name,embed) in enumerate(db.items()):
-#         # print(i,name)           
-
+# def id

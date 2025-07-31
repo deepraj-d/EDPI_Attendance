@@ -6,7 +6,7 @@ from insightface.app import FaceAnalysis
 
 # Initialize FaceAnalysis model
 app = FaceAnalysis(name='buffalo_l', providers=['CPUExecutionProvider'])  # Use CUDAExecutionProvider if GPU available
-app.prepare(ctx_id=0, det_size=(640, 640))  # You can increase det_size for high-res faces
+app.prepare(ctx_id=0, det_size=(640, 640)) 
 
 # Storage for embeddings
 db = {}
