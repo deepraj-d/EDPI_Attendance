@@ -2,4 +2,6 @@
 output_data
 Input_data
 __pycache__
+.venv
 e
+tp.py
