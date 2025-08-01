@@ -31,7 +31,8 @@ known_faces = load_db(db_path)
 
 def get_data(frame,frame_count):
     new_entries = []
-    results = yolo_model_body(frame)
+    name = None
+    results = yolo_model_body(frame,verbose = False)
     for result in results:
         boxes = result.boxes
         for i, box in enumerate(boxes):
@@ -53,7 +54,7 @@ def get_data(frame,frame_count):
             if person_crop.size > 0:
                 
                 
-                results2 = yolo_model_face(person_crop)
+                results2 = yolo_model_face(person_crop,verbose = False)
                 for res in results2:
                     boxes_face = res.boxes
                     
@@ -91,7 +92,7 @@ def get_data(frame,frame_count):
             writer.writerows(new_entries)
 
     
-    return None
+    return name
 
 
 

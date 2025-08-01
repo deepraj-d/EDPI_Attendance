@@ -13,7 +13,7 @@ cap = cv2.VideoCapture(path_video)
 frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
 frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 size = (frame_width, frame_height)
-writer = cv2.VideoWriter(f"output_data/{file_name}.mp4", cv2.VideoWriter_fourcc(*'mp4v'), 20, size)
+# writer = cv2.VideoWriter(f"output_data/output.mp4", cv2.VideoWriter_fourcc(*'mp4v'), 20, size)
 
 
 
@@ -26,17 +26,18 @@ while True:
     if not ret:
         break
     frame_count += 1
-    get_data(frame, frame_count)
+    n = get_data(frame, frame_count)
 
     cv2.rectangle(frame, (1260,1), (1420,40), (255, 0, 0), 2)
-    cv2.imshow("Office_Entrance_Cam", frame)
+    # cv2.imshow("Office_Entrance_Cam", frame)
+    
 
-    writer.write(frame)
+    # writer.write(frame)
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
 
 cap.release()
-writer.release()
+# writer.release()
 cv2.destroyAllWindows()
