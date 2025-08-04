@@ -3,40 +3,6 @@ import numpy as np
 import cv2
 import os 
 
-
-def get_employee_name(student_face,known_faces):
-    """
-    Detects faces in `person_crop` using YOLO `model`, matches embeddings with `known_faces`,
-    and returns recognized name, similarity score, and face bbox in full-frame coordinates.
-    
-    `offset_x` and `offset_y` are used to convert crop-relative bbox to original frame coords.
-    """
-    resized_face = cv2.resize(student_face, (150, 150))
-
-    embedding = get_embedding(resized_face)
-    recognized_name = None
-    similarity_sc = None
-
-    if embedding is not None:
-        for name, known_embedding in known_faces.items():
-            similarity = cosine_similarity(embedding, known_embedding)
-            
-            if similarity > 0.94:
-                similarity_sc = similarity
-                recognized_name = name
-                break  # Optional: exit loop on first match
-
-    if recognized_name is not None and similarity_sc is not None:
-        return recognized_name, similarity_sc
-
-    # No face detected or no match
-    return None, None
-
-
-
-
-
-
 def get_employee_name_arcface(student_face, known_faces, model_app, threshold=0.3):
     """
     Detects and embeds face using InsightFace `model_app`, matches with `known_faces`,
