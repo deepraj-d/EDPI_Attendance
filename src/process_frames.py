@@ -2,9 +2,14 @@ from utils import get_employee_name_arcface,get_time
 from src.embeddings import db_path,load_db
 from src.embeddings import pad_crop
 from ultralytics import YOLO
+import logging
 import os
 import cv2
 import csv
+
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s')
 
 yolo_model_face = YOLO('pre_trained_models/yolov11n-face.pt')
 yolo_model_body = YOLO('pre_trained_models/yolov8n.pt')
@@ -13,8 +18,9 @@ from insightface.app import FaceAnalysis
 app = FaceAnalysis(name='buffalo_l', providers=['CPUExecutionProvider'])
 app.prepare(ctx_id=0, det_size=(640, 640))
 
+date_t = get_time(date=True)
 # CSV file path
-csv_file_path = "sample.csv"
+csv_file_path = f"logs\{date_t}_log.csv"
 
 
 # Ensure CSV header is written only once
@@ -50,6 +56,8 @@ def get_data(frame,frame_count):
 
             x1, y1, x2, y2 = map(int, box.xyxy[0].tolist())
             person_crop = frame[y1:y2, x1:x2]
+            if person_crop is None:
+                continue
 
             # face_found = False
             x1_f = y1_f = x2_f = y2_f = 0
@@ -84,8 +92,8 @@ def get_data(frame,frame_count):
                         if name is not None and score is not None:
                             name = name.split("_")[0] if "_" in name else name
                             new_entries.append([get_time(date=True),name,get_time(time=True)])#, get_timestamp(fr=frame)])
-                            
-                        cv2.putText(frame, name, (x2_f, y2_f + 20),cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 0, 255), 2)
+                            logging.info(f"\033[92mPerson Identified: {name} at {get_time(time=True)}\033[0m")
+                        # cv2.putText(frame, name, (x2_f, y2_f + 20),cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 0, 255), 2)
                             # save_img_to_cluster(name,person_crop,name,frame_count)
                             # print(f"\033[91mPerson Identified {name} saved to cluster\033[0m")
     # Save new data to CSV
