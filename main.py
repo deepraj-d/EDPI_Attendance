@@ -25,12 +25,13 @@ def main():
     while True:
         ret, frame = cap.read()
         if not ret:
+            print('ret parameter returned false')
             break
         frame_count += 1
         
         get_data(frame, frame_count)
 
-        cv2.imshow("Office_Entrance_Cam", frame)
+        # cv2.imshow("Office_Entrance_Cam", frame)
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break

@@ -100,8 +100,14 @@ def pad_crop(frame, x1, y1, x2, y2, padding=20):
 
 
     
-# ---- Helper: get system time ----
-def get_time():
+def get_time(date=False, time=False):
     now = datetime.now()
-    time_str = now.strftime("%H:%M:%S")
-    return time_str
+
+    if date and time:
+        return now.strftime("%Y-%m-%d %H:%M:%S")
+    elif date:
+        return now.strftime("%Y-%m-%d")
+    elif time:
+        return now.strftime("%H:%M:%S")
+    else:
+        return "Please specify either date or time"

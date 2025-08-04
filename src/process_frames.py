@@ -1,4 +1,4 @@
-from utils import get_employee_name_arcface 
+from utils import get_employee_name_arcface,get_time 
 from src.embeddings import db_path,load_db
 from src.embeddings import pad_crop
 from ultralytics import YOLO
@@ -21,7 +21,7 @@ csv_file_path = "sample.csv"
 if not os.path.exists(csv_file_path):
     with open(csv_file_path, mode='w', newline='') as file:
         writer = csv.writer(file)
-        writer.writerow(['frame_count', 'name'])  # header # timestamp remain
+        writer.writerow(['Date','Name','Time'])  # header # timestamp remain
 
 
 # ---- Embeddings ----
@@ -83,7 +83,7 @@ def get_data(frame,frame_count):
                         # if name is not None and score is not None:
                         if name is not None and score is not None:
                             name = name.split("_")[0] if "_" in name else name
-                            new_entries.append([frame_count, name ])#, get_timestamp(fr=frame)])
+                            new_entries.append([get_time(date=True),name,get_time(time=True)])#, get_timestamp(fr=frame)])
                             
                         cv2.putText(frame, name, (x2_f, y2_f + 20),cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 0, 255), 2)
                             # save_img_to_cluster(name,person_crop,name,frame_count)
