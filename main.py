@@ -4,9 +4,13 @@ from src.process_frames import get_data
 
 
 # ---- Setup RTSP camera ----
-camera_url = 'rtsp://admin:admin@192.168.29.250:554/rtsp/streaming?channel=01&subtype=A2'
+# ffplay -rtsp_transport tcp 'rtsp://admin:admin123@192.168.29.247:554/rtsp/streaming?channel=07&subtype=A2' # for exit cam
+# Stream #0:0: Video: hevc (Main), yuv420p(tv), 2688x1520, 25 fps, 25 tbr, 90k tbn
+camera_url_entrance = 'rtsp://admin:admin@192.168.29.250:554/rtsp/streaming?channel=01&subtype=A2'
+camera_url_exit = 'rtsp://admin:admin123@192.168.29.247:554/rtsp/streaming?channel=07&subtype=A2'
+
 file_name = "Live_Stream"
-MAX_FAILS = 10  # consecutive failed reads before restart
+MAX_FAILS = 5  # consecutive failed reads before restart
 
 
 def open_camera(url, retries=3, delay=2):
@@ -24,7 +28,7 @@ def open_camera(url, retries=3, delay=2):
 
 
 def main():
-    cap = open_camera(camera_url)
+    cap = open_camera(camera_url_entrance)
     if cap is None:
         exit("[CRITICAL] Unable to start camera feed. Exiting...")
 
@@ -38,7 +42,7 @@ def main():
     while True:
         if cap is None:
             print("\033[91m[ERROR] Capture object is None. Attempting to reconnect...\033[0m")
-            cap = open_camera(camera_url)
+            cap = open_camera(camera_url_entrance)
             continue
 
         ret, frame = cap.read()
@@ -55,7 +59,7 @@ def main():
                 if fail_count >= MAX_FAILS:
                     print(f"\033[91m[CRITICAL] Reinitializing capture after {fail_count} failed attempts...\033[0m")
                     cap.release()
-                    cap = open_camera(camera_url)
+                    cap = open_camera(camera_url_entrance)
                     fail_count = 0
                 continue
 

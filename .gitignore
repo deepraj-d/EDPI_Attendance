@@ -5,3 +5,6 @@ __pycache__
 .venv
 e
 tp.py
+main_out.py
+preview.py
+logs
