@@ -1,7 +1,7 @@
 from datetime import datetime
 import numpy as np
+import time
 import cv2
-import os 
 
 def get_employee_name_arcface(student_face, known_faces, model_app, threshold=0.3):
     """
@@ -77,3 +77,20 @@ def get_time(date=False, time=False):
         return now.strftime("%H:%M:%S")
     else:
         return "Please specify either date or time"
+    
+
+
+
+
+def open_camera(url, retries=3, delay=2):
+    for attempt in range(retries):
+        cap = cv2.VideoCapture(url)
+        fps = cap.get(cv2.CAP_PROP_FPS)
+        print(f"\033[94m[INFO] Camera FPS: {fps:.2f}\033[0m")
+        if cap.isOpened():
+            print("\033[92m[INFO] Camera connected.\033[0m")
+            return cap
+        print(f"\033[93m[WARN] Retry {attempt + 1}/{retries} - Could not open stream. Retrying in {delay}s...\033[0m")
+        time.sleep(delay)
+    print("\033[91m[ERROR] Camera could not be opened after retries.\033[0m")
+    return None

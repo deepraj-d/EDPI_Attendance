@@ -27,14 +27,14 @@ csv_file_path = f"logs\{date_t}_log.csv"
 if not os.path.exists(csv_file_path):
     with open(csv_file_path, mode='w', newline='') as file:
         writer = csv.writer(file)
-        writer.writerow(['Date','Name','Time'])  # header # timestamp remain
+        writer.writerow(['Date','Name','Time',"Cam"])  # header # timestamp remain
 
 
 # ---- Embeddings ----
 known_faces = load_db(db_path)
 
 
-def get_data(frame,frame_count):
+def get_data(frame,cam):
     """
     get data fuction is responsible for getting face detection
     two step detction step one will detect person and step two will  detect face
@@ -91,7 +91,11 @@ def get_data(frame,frame_count):
                         # if name is not None and score is not None:
                         if name is not None and score is not None:
                             name = name.split("_")[0] if "_" in name else name
-                            new_entries.append([get_time(date=True),name,get_time(time=True)])#, get_timestamp(fr=frame)])
+                            new_entries.append([get_time(date=True),
+                                                name,
+                                                get_time(time=True),
+                                                cam
+                                                ])#, get_timestamp(fr=frame)])
                             logging.info(f"\033[92mPerson Identified: {name} at {get_time(time=True)}\033[0m")
                         # cv2.putText(frame, name, (x2_f, y2_f + 20),cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 0, 255), 2)
                             # save_img_to_cluster(name,person_crop,name,frame_count)
