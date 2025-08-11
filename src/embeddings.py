@@ -36,21 +36,6 @@ def load_db(path):
         db = json.load(f)
     for name,embed in db.items():
         known_f[name] = np.array(embed)
-    print(f"Total person found in DB : {known_f.keys()}")
+    # print(f"Total person found in DB : {known_f.keys()}")
     return known_f
 
-
-
-# with open("db/embeddings_db.json", "r") as f:
-#     db = json.load(f)
-
-
-# # Convert list values to NumPy arrays
-# for name in db:
-#     db[name] = np.array(db[name])
-
-
-# for i,(name,embed) in enumerate(db.items()):
-#     print(i,name)
-
-# def id

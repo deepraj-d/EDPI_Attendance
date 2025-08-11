@@ -84,7 +84,8 @@ def get_time(date=False, time=False):
 
 def open_camera(url, retries=3, delay=2):
     for attempt in range(retries):
-        cap = cv2.VideoCapture(url)
+        cap = cv2.VideoCapture(url,cv2.CAP_FFMPEG)
+        
         fps = cap.get(cv2.CAP_PROP_FPS)
         print(f"\033[94m[INFO] Camera FPS: {fps:.2f}\033[0m")
         if cap.isOpened():

@@ -6,7 +6,7 @@ import logging
 import os
 import cv2
 import csv
-
+import datetime
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s')
@@ -15,19 +15,35 @@ yolo_model_face = YOLO('pre_trained_models/yolov11n-face.pt')
 yolo_model_body = YOLO('pre_trained_models/yolov8n.pt')
 
 from insightface.app import FaceAnalysis
-app = FaceAnalysis(name='buffalo_l', providers=['CPUExecutionProvider'])
+app = FaceAnalysis(name='buffalo_l', allowed_modules=['recognition','detection'],providers=['CPUExecutionProvider'])
 app.prepare(ctx_id=0, det_size=(640, 640))
 
 date_t = get_time(date=True)
-# CSV file path
-csv_file_path = f"logs\{date_t}_log.csv"
 
 
-# Ensure CSV header is written only once
-if not os.path.exists(csv_file_path):
-    with open(csv_file_path, mode='w', newline='') as file:
+current_csv_date = None
+csv_file_path = None
+
+def log_entries(new_entries):
+    global current_csv_date, csv_file_path
+    today_str = get_time(date=True)
+
+    # If date changes, create a new file
+    if today_str != current_csv_date:
+        current_csv_date = today_str
+        csv_file_path = f"logs/{today_str}_log.csv"
+        if not os.path.exists(csv_file_path):
+            with open(csv_file_path, mode='w', newline='') as file:
+                writer = csv.writer(file)
+                writer.writerow(['Date','Name','Time',"Cam"])
+
+    # Append the new entries
+    with open(csv_file_path, mode='a', newline='') as file:
         writer = csv.writer(file)
-        writer.writerow(['Date','Name','Time',"Cam"])  # header # timestamp remain
+        writer.writerows(new_entries)
+
+
+
 
 
 # ---- Embeddings ----
@@ -40,6 +56,10 @@ def get_data(frame,cam):
     two step detction step one will detect person and step two will  detect face
     
     """
+    if cam=="Entrance":
+        cv2.imwrite('entrance.jpg',frame)
+    elif cam == "Exit":
+        cv2.imwrite('exit.jpg',frame)
     new_entries = []
     name = None
     results = yolo_model_body(frame,verbose = False)
@@ -102,10 +122,7 @@ def get_data(frame,cam):
                             # print(f"\033[91mPerson Identified {name} saved to cluster\033[0m")
     # Save new data to CSV
     if new_entries:
-        
-        with open(csv_file_path, mode='a', newline='') as file:
-            writer = csv.writer(file)
-            writer.writerows(new_entries)
+        log_entries(new_entries)
 
     
     return name
