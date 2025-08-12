@@ -56,10 +56,10 @@ def get_data(frame,cam):
     two step detction step one will detect person and step two will  detect face
     
     """
-    if cam=="Entrance":
-        cv2.imwrite('entrance.jpg',frame)
-    elif cam == "Exit":
-        cv2.imwrite('exit.jpg',frame)
+    # if cam=="Entrance":
+    #     cv2.imwrite('entrance.jpg',frame)
+    # elif cam == "Exit":
+    #     cv2.imwrite('exit.jpg',frame)
     new_entries = []
     name = None
     results = yolo_model_body(frame,verbose = False)
